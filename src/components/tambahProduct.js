@@ -1,0 +1,141 @@
+import React, { Component } from 'react'
+import axios from 'axios'
+import { useEffect, useState } from 'react'
+import { useHistory } from 'react-router-dom'
+import { backend_url } from '../backend-config'
+
+
+export default function TambahProduct() {
+    const history = useHistory()
+    const [Product, setProduct] = useState([])
+    const [product_name, setProductName] = useState('');
+    const [price, setPrice] = useState('');
+    const [stock, setStock] = useState('');
+    const [erorr, setError] = useState('');
+    const [alert, setAlert] = useState('');
+    
+    const onChangeProductName = (e) => {
+        const value = e.target.value
+        setProductName(value)
+        setError('')
+    }
+    const onChangePrice = (e) => {
+        const value = e.target.value
+        setPrice(value)
+        setError('')
+    }
+    const onChangeStock = (e) => {
+        const value = e.target.value
+        setStock(value)
+        setError('')
+    }
+
+    const onClickBackProduct = () => {
+        history.push('/product')
+    }
+
+    const klikDaftar = (e) => {
+        console.log(e)
+        e.preventDefault()
+        const data = {
+            product_name: product_name,
+            price: Number(price),
+            stock: Number(stock),
+        
+        };
+        console.log(data);
+        axios
+            .post(`${backend_url}/product`, data)
+            .then(result => {
+                console.log(result)
+                if (result.data.error) {  
+                    // console.log(result.data);
+                    console.log(result.data)
+                        //notifyErr()
+
+                    }else{
+                        console.log(result.data)
+                    if (result.data) {
+                        setProductName('')
+                        setPrice('')
+                        setStock('')
+                        setAlert(result.data.message);
+                        setTimeout(() => {
+                            setAlert("");
+                        }, 2500);
+                    }
+                    //notify()
+                    
+                }{history.push('./product')}
+            })
+            .catch((e) => {
+                setError(e.response.message);
+            });
+    };
+
+    return (
+        <div>
+            <div className="flex flex-wrap rounded-lg shadow border-4 border-pink-500">
+
+                <form className="w-full flex flex-wrap content-evenly" onSubmit={klikDaftar}>
+                    <div className="w-full">
+                        <h1 class="flex-auto text-xl font-bold dark:text-gray-50 ml-5">
+                            Tambah produk
+                            </h1>
+                    </div>
+                    <div className="w-full ml-5 text-xs mb-10">
+                        Tambah produk yang tepat untuk produkmu
+                </div>
+                    <div className="w-4/12 ml-5 text-base">
+                        Nama Produk
+                </div>
+                    <div className="w-6/12 ">
+                        <div class=" relative ">
+                            <input type="text" id="prod_name" class=" flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 rounded-lg placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent mb-2"
+                                placeholder="Mohon masukkan nama produk"
+                                value={product_name}
+                                onChange={onChangeProductName} />
+                        </div>
+                    </div>
+                    <div className="w-4/12 ml-5 text-base">
+                        Harga Produk
+                </div>
+                    <div className="w-6/12">
+
+                    <div class=" relative ">
+                            <input type="number" id="prod_name" class=" flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 rounded-lg placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent mb-2"
+                                placeholder="Mohon masukkan harga produk"
+                                value={price}
+                                onChange={onChangePrice} />
+                        </div>
+
+                    </div>
+                    <div className="w-4/12 ml-5 text-base">
+                        Stock
+                </div>
+                    <div className="w-6/12 ">
+                        <div class=" relative ">
+                            <input type="number" id="prod_name" class=" flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 rounded-lg placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-primary-600 focus:border-transparent mb-2"
+                                placeholder="Mohon masukkan stock produk"
+                                value={stock}
+                                onChange={onChangeStock} />
+                        </div>
+                    </div>
+                    
+                    <div className="w-2/4 grid justify-items-end">
+                        <button class="bg-primary hover:bg-blue-dark text-black font-bold py-2 px-4 rounded m-auto underline"
+                            onClick={onClickBackProduct}> Batal
+</button>
+                    </div>
+
+                    <div className="w-2/4 grid justify-items-end">
+                    <button class="bg-primary hover:bg-blue-dark text-black font-bold py-2 px-4 rounded m-auto underline"
+                            values="klikDaftar" onClick={klikDaftar}> Simpan
+</button>                    </div>
+                </form>
+            </div>
+
+        </div>
+    )
+
+}
